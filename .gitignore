@@ -1,0 +1,36 @@
+# =========================
+# Node.js
+# =========================
+server/node_modules/
+
+# =========================
+# Environment files
+# =========================
+python-service/.envs/
+server/src/.envs/
+client/.env
+client/.env.*
+
+# =========================
+# Python
+# =========================
+python-service/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Build files
+# =========================
+client/dist/
+client/build/
+server/dist/
+
+# =========================
+# Logs
+# =========================
+*.log
