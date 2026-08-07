@@ -18,4 +18,16 @@ router.post("/logout", isAuthenticated, controller.logoutUser)
 // Refresh token
 router.get("/refresh", controller.refreshAccessToken)
 
+// Get current user info
+router.get("/me", isAuthenticated, (req, res) => {
+    return res.status(200).json({
+        success: true,  
+        data: {
+            id: req.user.id,
+            email: req.user.email,
+            username: req.user.username,
+        }
+    });
+});
+
 module.exports = router;

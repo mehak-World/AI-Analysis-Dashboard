@@ -8,7 +8,12 @@ const router = express.Router();
 // Upload file
 router.post("/upload", isAuthenticated, upload.single("file"), controller.handleUploadAndAnalyze)
 
+// Get sessions
+router.get("/sessions", isAuthenticated, controller.getAllSessions)
+
 // Get analysis status
 router.get("/:sessionId", isAuthenticated, controller.getAnalysis);
+
+
 
 module.exports = router;

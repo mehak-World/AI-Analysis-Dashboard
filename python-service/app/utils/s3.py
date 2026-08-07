@@ -38,4 +38,12 @@ async def load_dataframe_from_s3(s3_key: str) -> pd.DataFrame:
 
     df = pd.read_csv(io.BytesIO(csv_bytes))
 
+    print("=" * 80)
+    print("DATAFRAME LOADED")
+    print("Shape:", df.shape)
+    print("Columns:")
+    for i, col in enumerate(df.columns):
+        print(f"{i}: {repr(col)}")
+    print("=" * 80)
+
     return df

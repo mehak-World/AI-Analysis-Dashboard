@@ -110,12 +110,16 @@ const logout = async (user, accessToken, refreshToken) => {
 
 const generateNewAccessToken = async (refreshToken) => {
     const refreshPayload = verifyRefreshToken(refreshToken);
+    console.log("refresh payload: ", refreshPayload);
     const { id, sessionId } = refreshPayload;
+
 
     // Check session exists
     const storedRefreshToken = await cache.get(
         CACHE_KEYS.AUTH_REFRESH(id, sessionId)
     );
+
+    console.log("Stored refresh token from Redis: ", storedRefreshToken);
 
     if (!storedRefreshToken) {
         throw new Error("Session expired.");
@@ -132,6 +136,8 @@ const generateNewAccessToken = async (refreshToken) => {
     if (!user) {
         throw new Error("User not found.");
     }
+
+    console.log("user: ", user)
 
     const { accessToken } = generateTokens(user, sessionId);
     return accessToken;

@@ -44,6 +44,7 @@ const runInsights = async ({
 };
 
 module.exports = {
+    pythonApi,
     runProfile,
     runCharts,
     runInsights,

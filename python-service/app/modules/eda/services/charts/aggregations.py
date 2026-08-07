@@ -193,14 +193,25 @@ def _boxplot(
     chart: ChartSpec,
 ) -> List[dict]:
 
-    series = df[chart.x.column].dropna()
+    grouped = (
+        df.groupby(chart.x.column)[chart.y.column]
+    )
 
-    return [
-        {
-            "min": float(series.min()),
-            "q1": float(series.quantile(0.25)),
-            "median": float(series.median()),
-            "q3": float(series.quantile(0.75)),
-            "max": float(series.max()),
-        }
-    ]
+    rows = []
+
+    for group, values in grouped:
+
+        values = values.dropna()
+
+        rows.append(
+            {
+                chart.x.column: group,
+                "min": float(values.min()),
+                "q1": float(values.quantile(0.25)),
+                "median": float(values.median()),
+                "q3": float(values.quantile(0.75)),
+                "max": float(values.max()),
+            }
+        )
+
+    return rows

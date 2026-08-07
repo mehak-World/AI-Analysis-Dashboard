@@ -108,6 +108,7 @@ const logoutUser = async (req, res, next) => {
 const refreshAccessToken = async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken;
+        console.log("Refresh token from cookie: ", refreshToken);
 
         if (!refreshToken) {
             return res.status(401).json({
@@ -120,7 +121,9 @@ const refreshAccessToken = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            accessToken,
+            data: {
+                accessToken
+            },
         });
 
     } catch (err) {

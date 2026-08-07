@@ -9,6 +9,7 @@ const healthRoutes = require("./modules/health/routes");
 const s3Routes = require("./modules/s3/router")
 const authRoutes = require("./modules/auth/routes")
 const analysisRoutes = require("./modules/analysis/routes")
+const chatRoutes = require("./modules/chat/routes")
 
 const { apiLimiter } = require("./middleware/rateLimit/apiLimiter");
 
@@ -51,6 +52,7 @@ app.use("/health", healthRoutes);
 app.use("/s3", s3Routes)
 app.use("/auth", authRoutes)
 app.use("/analyze", analysisRoutes)
+app.use("/chat", chatRoutes)
 
 // NOT FOUND route -> always at end
 app.use((req, res) => {
