@@ -2,31 +2,55 @@ const analysisService = require("./service");
 const s3Service = require("../s3/service");
 
 const handleUploadAndAnalyze = async (req, res, next) => {
-  try {
-    const { key } = await s3Service.uploadFile(req.file);
+    try {
+        // 1. Create session first
+        const session = await analysisService.createSession({
+            userId: req.user.id,
+            originalName: req.file.originalname,
+        });
 
-    if (!key) {
-      return res.status(500).json({
-        success: false,
-        message: "Could not upload the file",
-      });
+        // 2. Upload file using the session ID
+        const { key } = await s3Service.uploadFile(
+            req.user,
+            req.file,
+            session._id
+        );
+
+        if (!key) {
+            return res.status(500).json({
+                success: false,
+                message: "Could not upload the file",
+            });
+        }
+
+        // 3. Store the S3 key in the session
+        session.s3Key = key;
+        await session.save();
+
+        // 4. Queue EDA
+        await analysisService.startAnalysis({
+            sessionId: session._id,
+            userId: req.user.id,
+            s3Key: key,
+        });
+
+        return res.status(202).json({
+            success: true,
+            message: "Analysis started successfully.",
+            data: {
+                sessionId: session._id,
+                originalName: session.originalName,
+                status: session.status,
+                currentStep: session.currentStep,
+                progress: session.progress,
+                createdAt: session.createdAt,
+                updatedAt: session.updatedAt,
+            },
+        });
+
+    } catch (err) {
+        return next(err);
     }
-
-    console.log("user: ", req.user);
-    const analysis = await analysisService.startAnalysis({
-      userId: req.user.id,
-      s3Key: key,
-      originalName: req.file.originalname,
-    });
-
-    return res.status(202).json({
-      success: true,
-      message: "Analysis started successfully.",
-      data: analysis,
-    });
-  } catch (err) {
-    return next(err);
-  }
 };
 
 const getAnalysis = async (req, res, next) => {

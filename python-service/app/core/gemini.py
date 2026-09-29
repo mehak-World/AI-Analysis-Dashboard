@@ -1,18 +1,19 @@
-import asyncio
-import google.generativeai as genai
+from google import genai
 from google.api_core.exceptions import ResourceExhausted, DeadlineExceeded
 
 from app.core.config import settings
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
-gemini = genai.GenerativeModel(settings.GEMINI_MODEL)
 
 async def ask_gemini(prompt: str) -> str:
     try:
-        response = await gemini.generate_content_async(prompt)
+        response = await client.aio.models.generate_content(
+            model=settings.GEMINI_MODEL,
+            contents=prompt,
+        )
 
-        if response and hasattr(response, "text"):
+        if response and response.text:
             return response.text.strip()
 
         return "No response generated."
