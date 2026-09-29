@@ -1,6 +1,7 @@
 from app.modules.eda.services.analysis.planner import AnalysisPlanner
 from app.modules.eda.services.analysis.executor import AnalysisExecutor
 from app.utils.s3 import load_dataframe_from_s3
+from app.modules.eda.services.utils.normalizer import normalize_datetime_columns
 
 planner = AnalysisPlanner()
 executor = AnalysisExecutor()
@@ -24,6 +25,9 @@ class ChatService:
         df = await load_dataframe_from_s3(
             request.s3_key
         )
+
+        df = normalize_datetime_columns(df)
+
         print(df.shape)
 
         print("Executing")

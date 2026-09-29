@@ -5,6 +5,9 @@ const chat = async (req, res, next) => {
     const { sessionId } = req.params;
     const { question } = req.body;
 
+    console.log("session id: ", sessionId);
+    console.log("question: ", question);
+
     const result = await chatService.chat({
       sessionId,
       userId: req.user.id,

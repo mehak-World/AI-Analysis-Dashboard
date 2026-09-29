@@ -8,6 +8,7 @@ server/node_modules/
 # =========================
 python-service/.envs/
 server/src/.envs/
+client/.envs/
 client/.env
 client/.env.*
 

@@ -106,9 +106,7 @@ def build_relationship_plan(
     # ------------------------------
     # Category vs Category
     # ------------------------------
-
     if x_categorical and y_categorical:
-
         return RelationshipPlan(
             x=x,
             y=y,

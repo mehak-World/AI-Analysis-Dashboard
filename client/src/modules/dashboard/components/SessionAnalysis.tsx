@@ -6,6 +6,7 @@ import DatasetOverview from "./DatasetOverview";
 import ChartsSection from "./ChartsSection";
 import NumericSummarySection from "./NumericSummarySection";
 import CorrelationSection from "./CorrelationSection";
+import ChatWidget from "../../chat/components/ChatWidget";
 
 interface SessionAnalysisProps {
   sessionId: string;
@@ -134,6 +135,7 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
         />
         <CorrelationSection correlations={session.correlations} />
         </div>
+         <ChatWidget sessionId={sessionId} />
     </div>
   );
 };

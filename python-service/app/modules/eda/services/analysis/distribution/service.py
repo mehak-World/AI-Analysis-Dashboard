@@ -2,11 +2,11 @@ from app.core.gemini import ask_gemini
 
 from app.modules.eda.services.charts.generator import generate_charts
 
-from .planner import build_relationship_plan
-from .statistics import generate_relationship_statistics
+from .planner import build_distribution_plan
+from .statistics import generate_distribution_statistics
 from .chart_builder import build_chart_spec
-from .evidence import build_relationship_evidence
-from .prompts import build_relationship_prompt
+from .evidence import build_distribution_evidence
+from .prompts import build_distribution_prompt
 
 import json
 import re
@@ -25,39 +25,37 @@ def extract_json(text):
     return json.loads(match.group())
 
 
-async def analyze_relationship(
+async def analyze_distribution(
     df,
     user_question,
-    x,
-    y,
+    column,
 ):
 
     # ------------------------
     # Plan
     # ------------------------
 
-    print("========== RELATIONSHIP ==========")
+    print("========== DISTRIBUTION ==========")
 
-    print("1. Building relationship plan")
-    relationship_plan = build_relationship_plan(
+    print("1. Building distribution plan")
+    distribution_plan = build_distribution_plan(
         df,
-        x,
-        y,
+        column,
     )
 
-    print(relationship_plan)
+    print(distribution_plan)
 
     print("2. Computing statistics")
-    statistics = generate_relationship_statistics(
+    statistics = generate_distribution_statistics(
         df,
-        relationship_plan,
+        distribution_plan,
     )
 
     print(statistics)
 
     print("3. Building chart spec")
     chart_spec = build_chart_spec(
-        relationship_plan,
+        distribution_plan,
     )
 
     print(chart_spec)
@@ -71,17 +69,17 @@ async def analyze_relationship(
     print(f"Generated {len(charts)} charts")
 
     print("5. Building evidence")
-    evidence = build_relationship_evidence(
-        relationship_plan,
+    evidence = build_distribution_evidence(
+        distribution_plan,
         statistics,
     )
 
     print(evidence)
 
     print("6. Building Gemini prompt")
-    prompt = build_relationship_prompt(
+    prompt = build_distribution_prompt(
         question=user_question,
-        relationship_plan=relationship_plan,
+        distribution_plan=distribution_plan,
         evidence=evidence,
         statistics=statistics,
         chart=charts[0] if charts else {},

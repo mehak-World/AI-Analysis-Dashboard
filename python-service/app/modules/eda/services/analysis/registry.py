@@ -1,6 +1,6 @@
 from .intents import Intent
 from .models import IntentDefinition
-from .handlers import relationship
+from .handlers import relationship, comparison, trend, distribution, ranking, overview, composition
 from .intents import Intent
 
 
@@ -147,5 +147,10 @@ INTENT_REGISTRY = {
 
 HANDLERS = {
     Intent.RELATIONSHIP: relationship.execute,
-
+    Intent.COMPARISON: comparison.execute,
+    Intent.TREND: trend.execute,
+    Intent.DISTRIBUTION: distribution.execute,
+    Intent.RANKING: ranking.execute,
+    Intent.OVERVIEW: overview.execute,
+    Intent.COMPOSITION: composition.execute,
 }

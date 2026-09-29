@@ -4,7 +4,6 @@ Relationship statistics engine.
 Computes the statistical evidence required for
 a RelationshipPlan.
 """
-
 import pandas as pd
 
 from scipy.stats import (
@@ -12,7 +11,6 @@ from scipy.stats import (
     spearmanr,
     chi2_contingency,
 )
-
 
 def generate_relationship_statistics(
     df: pd.DataFrame,
@@ -94,7 +92,6 @@ def _group_comparison(
 # ---------------------------------------------------
 # Category vs Category
 # ---------------------------------------------------
-
 def _association(
     df,
     plan,
@@ -117,7 +114,6 @@ def _association(
 # ---------------------------------------------------
 # Time Series
 # ---------------------------------------------------
-
 def _trend(
     df,
     plan,

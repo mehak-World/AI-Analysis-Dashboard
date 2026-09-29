@@ -43,7 +43,6 @@ def generate_chart_data(
 
     return []
 
-
 def _bar_chart(
     df: pd.DataFrame,
     chart: ChartSpec,
@@ -52,27 +51,87 @@ def _bar_chart(
     x = chart.x.column
     y = chart.y.column
 
+    # --------------------------------------------------
+    # Rate by Category
+    # --------------------------------------------------
+
+    if chart.options.get("metric") == "rate":
+
+        positive_value = chart.options.get(
+            "positive_value"
+        )
+
+        if positive_value is None:
+            raise ValueError(
+                "Rate chart requires a positive_value."
+            )
+
+        data = (
+            df[
+                [
+                    x,
+                    y,
+                ]
+            ]
+            .dropna()
+        )
+
+        grouped = data.groupby(x)
+
+        total = grouped[y].size()
+
+        positive_count = (
+            (data[y] == positive_value)
+            .groupby(data[x])
+            .sum()
+        )
+
+        result = (
+            positive_count
+            .div(total)
+            .mul(100)
+            .rename(y)
+        )
+
+        return (
+            result
+            .reset_index()
+            .round(2)
+            .to_dict("records")
+        )
+
+    # --------------------------------------------------
+    # Normal Bar Aggregations
+    # --------------------------------------------------
+
     grouped = df.groupby(x)[y]
 
     if chart.aggregation == Aggregation.SUM:
+
         result = grouped.sum()
 
     elif chart.aggregation == Aggregation.MEAN:
+
         result = grouped.mean()
 
     elif chart.aggregation == Aggregation.COUNT:
+
         result = grouped.count()
 
     elif chart.aggregation == Aggregation.MIN:
+
         result = grouped.min()
 
     elif chart.aggregation == Aggregation.MAX:
+
         result = grouped.max()
 
     elif chart.aggregation == Aggregation.MEDIAN:
+
         result = grouped.median()
 
     else:
+
         result = grouped.sum()
 
     return (
@@ -90,15 +149,154 @@ def _line_chart(
     x = chart.x.column
     y = chart.y.column
 
-    grouped = (
-        df
-        .groupby(x)[y]
-        .sum()
-        .reset_index()
-        .sort_values(x)
+    data = df[[x, y]].copy()
+
+    # --------------------------------------------------
+    # Parse datetime
+    # --------------------------------------------------
+
+    data[x] = pd.to_datetime(
+        data[x],
+        errors="coerce",
     )
 
-    return grouped.to_dict("records")
+    data = data.dropna(
+        subset=[x]
+    )
+
+    # --------------------------------------------------
+    # Frequency
+    # --------------------------------------------------
+
+    frequency = chart.options.get(
+        "frequency",
+        "day",
+    )
+
+    if frequency == "hour":
+        data["_period"] = data[x].dt.floor("h")
+
+    elif frequency == "day":
+        data["_period"] = data[x].dt.floor("D")
+
+    elif frequency == "week":
+        data["_period"] = (
+            data[x]
+            .dt.to_period("W")
+            .dt.start_time
+        )
+
+    elif frequency == "month":
+        data["_period"] = (
+            data[x]
+            .dt.to_period("M")
+            .dt.start_time
+        )
+
+    elif frequency == "quarter":
+        data["_period"] = (
+            data[x]
+            .dt.to_period("Q")
+            .dt.start_time
+        )
+
+    elif frequency == "year":
+        data["_period"] = (
+            data[x]
+            .dt.to_period("Y")
+            .dt.start_time
+        )
+
+    else:
+        raise ValueError(
+            f"Unsupported trend frequency: {frequency}"
+        )
+
+    # --------------------------------------------------
+    # Aggregation
+    # --------------------------------------------------
+
+    aggregation = chart.aggregation
+
+    if aggregation == Aggregation.COUNT:
+
+        grouped = (
+            data
+            .groupby("_period")
+            .size()
+            .reset_index(name=y)
+        )
+
+    elif aggregation == Aggregation.SUM:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .sum()
+            .reset_index()
+        )
+
+    elif aggregation == Aggregation.MEAN:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .mean()
+            .reset_index()
+        )
+
+    elif aggregation == Aggregation.MIN:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .min()
+            .reset_index()
+        )
+
+    elif aggregation == Aggregation.MAX:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .max()
+            .reset_index()
+        )
+
+    elif aggregation == Aggregation.MEDIAN:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .median()
+            .reset_index()
+        )
+
+    else:
+
+        grouped = (
+            data
+            .groupby("_period")[y]
+            .sum()
+            .reset_index()
+        )
+
+    # --------------------------------------------------
+    # Final format
+    # --------------------------------------------------
+
+    grouped = grouped.rename(
+        columns={
+            "_period": x,
+        }
+    )
+
+    return (
+        grouped
+        .sort_values(x)
+        .round(4)
+        .to_dict("records")
+    )
 
 def _pie_chart(
     df: pd.DataFrame,
