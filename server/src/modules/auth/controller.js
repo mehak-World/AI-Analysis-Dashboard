@@ -51,8 +51,8 @@ const loginUser = async (req, res, next) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            // secure: isProduction,
-            secure: false,
+            secure: isProduction,
+            // secure: false,
             // sameSite: isProduction ? "None" : "Lax",
             sameSite: "Lax",
             maxAge: REFRESH_TOKEN_TTL,
