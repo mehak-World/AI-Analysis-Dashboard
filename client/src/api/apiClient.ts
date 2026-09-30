@@ -10,7 +10,7 @@ interface RetryableRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const apiClient = axios.create({
-  baseURL: ENV.API_BASE_URL,
+  baseURL: "/api",
   withCredentials: true, // sends the httpOnly refreshToken cookie automatically
 });
 
