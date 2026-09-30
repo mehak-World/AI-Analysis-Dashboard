@@ -42,22 +42,22 @@ const UploadPanel = ({ onUploadSuccess }: UploadPanelProps) => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
+    <div className="flex-1 flex items-center justify-center p-4 sm:p-8 relative overflow-hidden">
       {/* Ambient gradient glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-blue-500/10 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[600px] sm:h-[600px] bg-gradient-to-br from-teal-500/10 via-cyan-500/5 to-blue-500/10 rounded-full blur-3xl" />
 
       <div className="relative w-full max-w-md">
         {/* Card with subtle gradient border */}
         <div className="rounded-2xl p-[1px] bg-gradient-to-br from-teal-400/30 via-zinc-800 to-blue-500/20">
-          <div className="rounded-2xl bg-zinc-950 p-10">
+          <div className="rounded-2xl bg-zinc-950 p-6 sm:p-10">
             <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center mb-5">
               <UploadCloud size={20} className="text-zinc-950" />
             </div>
 
-            <h2 className="text-2xl font-bold text-white mb-1.5 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-1.5 tracking-tight">
               Analyze a Dataset
             </h2>
-            <p className="text-sm text-zinc-400 mb-7 leading-relaxed">
+            <p className="text-sm text-zinc-400 mb-6 sm:mb-7 leading-relaxed">
               Upload a CSV file to get instant statistics, visualizations, and AI-powered insights.
             </p>
 
@@ -70,7 +70,7 @@ const UploadPanel = ({ onUploadSuccess }: UploadPanelProps) => {
                 }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
-                className={`relative block rounded-xl p-10 text-center cursor-pointer transition-all mb-4 ${
+                className={`relative block rounded-xl p-6 sm:p-10 text-center cursor-pointer transition-all mb-4 ${
                   dragOver
                     ? "bg-gradient-to-br from-teal-400/10 to-blue-500/10 ring-2 ring-teal-400"
                     : "bg-zinc-900/40 ring-1 ring-zinc-800 hover:ring-teal-400/40 hover:bg-zinc-900/60"
@@ -96,9 +96,10 @@ const UploadPanel = ({ onUploadSuccess }: UploadPanelProps) => {
                   />
                 </div>
                 <div className="text-sm font-medium text-zinc-200">
-                  Drop your CSV here
+                  <span className="hidden sm:inline">Drop your CSV here</span>
+                  <span className="sm:hidden">Tap to choose a CSV</span>
                 </div>
-                <div className="text-xs text-zinc-500 mt-1">or click to browse</div>
+                <div className="text-xs text-zinc-500 mt-1 hidden sm:block">or click to browse</div>
               </label>
             ) : (
               <div className="rounded-xl bg-zinc-900/60 ring-1 ring-zinc-800 p-4 mb-4 flex items-center gap-3">
@@ -113,7 +114,8 @@ const UploadPanel = ({ onUploadSuccess }: UploadPanelProps) => {
                 </div>
                 <button
                   onClick={() => setFile(null)}
-                  className="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
+                  aria-label="Remove file"
+                  className="shrink-0 w-8 h-8 rounded-md flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
                 >
                   <X size={15} />
                 </button>
@@ -122,7 +124,7 @@ const UploadPanel = ({ onUploadSuccess }: UploadPanelProps) => {
 
             {error && (
               <div className="flex items-center gap-1.5 text-xs text-red-400 mb-4">
-                <AlertCircle size={13} />
+                <AlertCircle size={13} className="shrink-0" />
                 {error}
               </div>
             )}

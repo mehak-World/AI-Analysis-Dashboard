@@ -21,12 +21,15 @@ const CorrelationSection = ({ correlations }: { correlations: Correlation[] }) =
   const labelW = 90;
   const size = labelW + cols.length * cellSize + 10;
 
+  const showTooltip = (e: React.MouseEvent, a: string, b: string, v: number) =>
+    setTooltip({ x: e.clientX, y: e.clientY, a, b, v });
+
   return (
-    <div className="rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 p-6">
+    <div className="rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 p-4 sm:p-6">
       <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-1">How columns relate</h2>
       <p className="text-xs text-zinc-500 mb-5">Teal = moves together · Blue = moves oppositely · darker = stronger</p>
 
-      <div className="overflow-auto mb-6">
+      <div className="overflow-auto mb-6" onClick={() => setTooltip(null)}>
         <svg width={size} height={size} style={{ fontFamily: "inherit" }}>
           {cols.map((col, ci) => (
             <text
@@ -59,8 +62,12 @@ const CorrelationSection = ({ correlations }: { correlations: Correlation[] }) =
                   rx={4}
                   fill={getColor(v)}
                   style={{ cursor: "pointer" }}
-                  onMouseEnter={(e) => setTooltip({ x: e.clientX, y: e.clientY, a: col, b: row, v })}
+                  onMouseEnter={(e) => showTooltip(e, col, row, v)}
                   onMouseLeave={() => setTooltip(null)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // tap support for touch screens
+                    showTooltip(e, col, row, v);
+                  }}
                 />
               );
             })
@@ -69,7 +76,10 @@ const CorrelationSection = ({ correlations }: { correlations: Correlation[] }) =
         {tooltip && (
           <div
             className="fixed z-50 bg-zinc-900 ring-1 ring-zinc-700 rounded-lg px-3 py-2 text-xs pointer-events-none"
-            style={{ left: tooltip.x + 12, top: tooltip.y + 12 }}
+            style={{
+              left: Math.min(tooltip.x + 12, window.innerWidth - 170),
+              top: tooltip.y + 12,
+            }}
           >
             <span className="text-white">{tooltip.a}</span> <span className="text-zinc-500">×</span>{" "}
             <span className="text-white">{tooltip.b}</span>

@@ -7,11 +7,14 @@ import {
   Clock,
   Sparkles,
   Plus,
+  X,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { AllSessionsRes } from "../types/dashboard.types";
 
 interface AllSessionsProps {
+  open: boolean;
+  onClose: () => void;
   sessions: AllSessionsRes[];
   loading: boolean;
   pagination: { page: number; limit: number; total: number };
@@ -22,6 +25,8 @@ interface AllSessionsProps {
 }
 
 const AllSessions = ({
+  open,
+  onClose,
   sessions,
   loading,
   pagination,
@@ -59,14 +64,26 @@ const AllSessions = ({
   };
 
   return (
-    <aside className="w-72 h-screen bg-zinc-950 border-r border-zinc-800/80 flex flex-col shrink-0">
+    <aside
+      className={`fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] h-dvh bg-zinc-950 border-r border-zinc-800/80
+        flex flex-col shrink-0 transition-all duration-200
+        md:static md:max-w-none
+        ${open ? "translate-x-0 md:ml-0" : "-translate-x-full md:translate-x-0 md:-ml-72"}`}
+    >
       {/* Header */}
       <div className="px-4 py-4 border-b border-zinc-800/80">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center shrink-0">
             <Sparkles size={13} className="text-zinc-950" />
           </div>
-          <span className="text-sm font-semibold text-white tracking-tight">DataLens</span>
+          <span className="text-sm font-semibold text-white tracking-tight flex-1">DataLens</span>
+          <button
+            onClick={onClose}
+            aria-label="Close sidebar"
+            className="w-7 h-7 rounded-md flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <X size={15} />
+          </button>
         </div>
 
         <button

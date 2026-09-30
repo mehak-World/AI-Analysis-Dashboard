@@ -17,12 +17,12 @@ const StatCards = ({ profile }: { profile: DatasetProfile }) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
       {cards.map((c) => (
-        <div key={c.label} className="relative rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 px-5 py-4 overflow-hidden">
+        <div key={c.label} className="relative rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 px-4 sm:px-5 py-3 sm:py-4 overflow-hidden">
           <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${c.gradient}`} />
           <div className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">{c.label}</div>
-          <div className="text-2xl font-bold text-white mt-1">{c.value ?? "—"}</div>
+          <div className="text-xl sm:text-2xl font-bold text-white mt-1 truncate">{c.value ?? "—"}</div>
         </div>
       ))}
     </div>

@@ -10,6 +10,7 @@ import {
   Scatter,
   PieChart,
   Pie,
+  Legend,
 } from "recharts";
 import { CHART_COLORS } from "../utils/dashboard";
 import type { Chart } from "../types/dashboard.types";
@@ -59,7 +60,8 @@ const BarChartRenderer = ({
           tick={AXIS_TICK}
           angle={isHistogram ? -35 : 0}
           textAnchor={isHistogram ? "end" : "middle"}
-          interval={0}
+          interval="preserveStartEnd"
+          minTickGap={8}
         />
 
         <YAxis tick={AXIS_TICK} width={40} />
@@ -99,7 +101,7 @@ const ScatterChartRenderer = ({
         margin={{
           top: 4,
           right: 8,
-          left: 8,
+          left: 0,
           bottom: 8,
         }}
       >
@@ -145,22 +147,17 @@ const PieChartRenderer = ({ chart }: { chart: Chart }) => {
     "count";
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height={240}>
       <PieChart>
         <Pie
           data={chart.data}
           dataKey={dataKey}
           nameKey={nameKey}
           cx="50%"
-          cy="50%"
-          outerRadius={75}
-          label={({ name, percent }) =>
-            `${name ?? ""} (${((percent ?? 0) * 100).toFixed(0)}%)`
-          }
-          labelLine={{
-            stroke: "#71717a",
-            strokeWidth: 1,
-          }}
+          cy="45%"
+          outerRadius={70}
+          label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
+          labelLine={false}
         >
           {chart.data.map((_: any, i: any) => (
             <Cell
@@ -171,6 +168,7 @@ const PieChartRenderer = ({ chart }: { chart: Chart }) => {
         </Pie>
 
         <Tooltip {...TOOLTIP_STYLE} />
+        <Legend wrapperStyle={{ fontSize: 10, color: "#a1a1aa" }} />
       </PieChart>
     </ResponsiveContainer>
   );
@@ -243,10 +241,10 @@ const BoxplotRenderer = ({
   ];
 
   return (
-    <div className="flex justify-center py-4">
+    <div className="flex justify-center py-4 px-2">
       <svg
-        width={W}
-        height={H}
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full max-w-[320px] h-auto"
         style={{ overflow: "visible" }}
       >
         {/* Whisker line */}

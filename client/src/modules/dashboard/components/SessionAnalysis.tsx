@@ -26,9 +26,9 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center p-4">
         <div className="flex items-center gap-2 text-red-400 text-sm">
-          <AlertCircle size={16} />
+          <AlertCircle size={16} className="shrink-0" />
           {error}
         </div>
       </div>
@@ -41,14 +41,14 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
     const activeIndex = PROCESSING_STEPS.findIndex((s) => s.id === session.currentStep);
 
     return (
-      <div className="flex-1 flex items-center justify-center p-10">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-10">
         <div className="w-full max-w-md">
-          <div className="mb-7">
-            <h2 className="text-xl font-bold text-white mb-1">Analyzing Dataset</h2>
-            <p className="text-sm text-zinc-400">{session.originalName}</p>
+          <div className="mb-6 sm:mb-7">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-1">Analyzing Dataset</h2>
+            <p className="text-sm text-zinc-400 break-all">{session.originalName}</p>
           </div>
 
-          <div className="rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 p-5">
+          <div className="rounded-xl bg-zinc-900/40 ring-1 ring-zinc-800 p-4 sm:p-5">
             {PROCESSING_STEPS.map((step, i) => {
               const done = i < activeIndex;
               const active = i === activeIndex;
@@ -96,9 +96,9 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
 
   if (session.status === "failed") {
     return (
-      <div className="flex-1 flex items-center justify-center p-10">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-10">
         <div className="flex items-center gap-2 text-red-400 text-sm">
-          <AlertCircle size={16} />
+          <AlertCircle size={16} className="shrink-0" />
           {session.error || "Analysis failed"}
         </div>
       </div>
@@ -108,9 +108,11 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
   // status === "ready"
   return (
     <div className="flex flex-col min-h-full">
-      <div className="px-8 py-5 border-b border-zinc-800/80 flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">{session.originalName}</h1>
+      <div className="px-4 sm:px-8 py-4 sm:py-5 border-b border-zinc-800/80 flex items-start justify-between flex-wrap gap-3">
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight break-words">
+            {session.originalName}
+          </h1>
           <p className="text-xs text-zinc-500 mt-1">
             Analyzed {new Date(session.updatedAt).toLocaleString("en-IN")}
           </p>
@@ -125,17 +127,17 @@ const SessionAnalysis = ({ sessionId, onSessionReady }: SessionAnalysisProps) =>
         </div>
       </div>
 
-      <div className="p-8 space-y-6">
+      <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
         <StatCards profile={session.datasetProfile} />
         <DatasetOverview summary={session.datasetSummary} />
         <ChartsSection charts={session.summaryCharts} />
         <NumericSummarySection
-            numericSummary={session.numericSummary}
-            statisticsExplanation={session.statisticsExplanation}
+          numericSummary={session.numericSummary}
+          statisticsExplanation={session.statisticsExplanation}
         />
         <CorrelationSection correlations={session.correlations} />
-        </div>
-         <ChatWidget sessionId={sessionId} />
+      </div>
+      <ChatWidget sessionId={sessionId} />
     </div>
   );
 };
