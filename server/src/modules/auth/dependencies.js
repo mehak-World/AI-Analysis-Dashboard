@@ -33,8 +33,6 @@ const generateTokens = (user, sessionId) => {
         expiresIn: "30d",
     });
 
-    console.log("Generated access token: ", accessToken);
-
     return { accessToken, refreshToken };
 };
 
